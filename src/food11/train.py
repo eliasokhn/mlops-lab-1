@@ -47,7 +47,7 @@ args = parser.parse_args()
 # --------------------------------------------------
 
 mlflow.set_tracking_uri("http://127.0.0.1:5000")
-mlflow.set_experiment("food11")
+mlflow.set_experiment("food11-docker")
 
 
 # --------------------------------------------------
@@ -297,8 +297,15 @@ with mlflow.start_run():
     # --------------------------------------------------
     # Log trained model to MLflow
     # --------------------------------------------------
+ # Move model to CPU before saving so it can be loaded
+# inside a CPU-only Docker container.
+model = model.to("cpu")
 
-    mlflow.pytorch.log_model(
-        model,
-        "model"
-    )
+example_input = torch.randn(1, 3, 128, 128)
+
+mlflow.pytorch.log_model(
+    model,
+    name="model",
+    input_example=example_input,
+    serialization_format="pickle"
+)

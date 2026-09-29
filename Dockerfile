@@ -1,0 +1,26 @@
+FROM python:3.10-slim AS builder
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir uv
+
+COPY pyproject.toml uv.lock ./
+
+ENV UV_HTTP_TIMEOUT=600
+
+RUN uv sync --frozen --no-dev --no-install-project
+
+
+FROM python:3.10-slim AS runtime
+
+WORKDIR /app
+
+COPY --from=builder /app/.venv /app/.venv
+
+COPY src/ ./src/
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+EXPOSE 8000
+
+CMD ["uvicorn", "src.food11.serve:app", "--host", "0.0.0.0", "--port", "8000"]

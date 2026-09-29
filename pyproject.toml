@@ -7,20 +7,50 @@ authors = [
     { name = "Elia Sokhn", email = "eliasokhn2004@hotmail.com" }
 ]
 requires-python = ">=3.10"
+
 dependencies = [
     "dvc>=3.67.1",
+    "fastapi>=0.141.1",
     "mlflow>=3.16.0",
     "pillow>=12.3.0",
+    "python-multipart>=0.0.32",
     "scikit-learn>=1.7.2",
     "torch>=2.14.0",
     "torchvision>=0.29.0",
+    "uvicorn>=0.53.0",
 ]
+
 
 [project.scripts]
 mlops-lab-1 = "mlops_lab_1:main"
 
+
+# Windows local environment -> NVIDIA CUDA PyTorch
 [[tool.uv.index]]
+name = "pytorch-cu130"
 url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+
+# Docker/Linux -> CPU-only PyTorch
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+
+[tool.uv.sources]
+
+torch = [
+    { index = "pytorch-cu130", marker = "sys_platform == 'win32'" },
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },
+]
+
+torchvision = [
+    { index = "pytorch-cu130", marker = "sys_platform == 'win32'" },
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },
+]
+
 
 [build-system]
 requires = ["uv_build>=0.12.10,<0.13.0"]
