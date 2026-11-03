@@ -5,4 +5,7 @@ mlflow.db
 .git/
 __pycache__/
 *.pyc
+**/__pycache__/
+.pytest_cache/
+.ruff_cache/
 .dvc/

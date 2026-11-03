@@ -1,19 +1,21 @@
 import argparse
+import os
 from pathlib import Path
 
-import mlflow
 import mlflow.pytorch
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, models, transforms
 
+import mlflow
 
 # --------------------------------------------------
 # Command-line arguments
 # --------------------------------------------------
 
 parser = argparse.ArgumentParser()
+parser.add_argument("--data-dir", type=Path, help="Override dataset path, e.g. the cleaned mini dataset")
 
 parser.add_argument(
     "--dataset",
@@ -46,7 +48,7 @@ args = parser.parse_args()
 # MLflow configuration
 # --------------------------------------------------
 
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
+mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://127.0.0.1:5000"))
 mlflow.set_experiment("food11-docker")
 
 
@@ -66,6 +68,18 @@ if args.dataset == "mini":
     data_dir = Path("data/food11_processed_mini")
 else:
     data_dir = Path("data/food11_processed")
+
+if args.data_dir:
+    data_dir = args.data_dir
+
+# Validate on the machine that actually has DVC data, before expensive training.
+try:
+    from .validate_data import validate_dataset
+except ImportError:
+    from validate_data import validate_dataset
+
+if not validate_dataset(data_dir):
+    raise SystemExit("Dataset contract failed; correct and version the data before training.")
 
 
 # --------------------------------------------------
@@ -159,10 +173,12 @@ with mlflow.start_run():
     # Log hyperparameters once at the beginning
     mlflow.log_params({
         "dataset": args.dataset,
+        "data_dir": str(data_dir),
         "epochs": args.epochs,
         "lr": args.lr,
         "batch_size": args.batch_size,
-        "model": "resnet18"
+        "model": "resnet18",
+        "test_size": len(test_dataset)
     })
 
 
@@ -297,15 +313,13 @@ with mlflow.start_run():
     # --------------------------------------------------
     # Log trained model to MLflow
     # --------------------------------------------------
- # Move model to CPU before saving so it can be loaded
-# inside a CPU-only Docker container.
-model = model.to("cpu")
-
-example_input = torch.randn(1, 3, 128, 128)
-
-mlflow.pytorch.log_model(
-    model,
-    name="model",
-    input_example=example_input,
-    serialization_format="pickle"
-)
+    # Keep model and evaluation metrics in the same run.
+    model = model.to("cpu")
+    example_input = torch.randn(1, 3, 128, 128)
+    mlflow.pytorch.log_model(
+        model,
+        name="model",
+        input_example=example_input.numpy(),
+        serialization_format="pickle",
+        registered_model_name="food11",
+    )
