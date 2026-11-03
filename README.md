@@ -3,6 +3,21 @@
 Run commands from this repository's root in the VS Code PowerShell terminal.
 Dockerfile instructions such as `FROM` and `RUN` belong in files, not in PowerShell.
 
+## Use the completed local stack
+
+MLflow, inference and the frontend run in Docker. You do not need a separate MLflow terminal.
+
+```powershell
+docker compose up -d
+docker compose ps
+```
+
+Open [the upload page](http://127.0.0.1:8501) and upload `tests/fixtures/bread.jpg`: the verified response is **Bread (99.1%)**. Open [MLflow](http://127.0.0.1:5000) to inspect the three runs and registered versions. Version 3 is champion with **77.25%** evaluation accuracy; version 2 is challenger. Models and registry state persist in Docker's `mlflow-data` volume.
+
+Evidence is in `lab/local-results.json`, `lab/compose-results.json`, `lab/volume-experiment.json`, `lab/ci-results.json`, and `lab/frontend-prediction.jpg`.
+
+The remaining sections explain reproduction on a fresh setup. Skip baseline training when using the existing volume, which already contains the models.
+
 ## Local checks
 
 ```powershell
@@ -76,6 +91,6 @@ Push your reviewed changes to trigger Actions. In GitHub Settings, add a main br
 
 Written answers and the pipeline diagram: [Lab 4](lab/lab4.md), [Lab 5](lab/lab5.md).
 
-Local verification: 14 tests passed; Ruff and Compose configuration checks passed. The full dataset fails its leakage check; [the report](lab/data-validation.txt) lists the 43 duplicate pairs.
+Verification: 15 tests passed; Ruff, Docker builds, real browser uploads, Staging reload, volume persistence, and GitHub test/smoke jobs passed. The full dataset fails its leakage check; [the report](lab/data-validation.txt) lists the 43 duplicate pairs.
 
 Implementation references: [MLflow proxied artifact storage](https://mlflow.org/docs/latest/self-hosting/architecture/tracking-server/) and [Compose readiness checks](https://docs.docker.com/compose/how-tos/startup-order/).
