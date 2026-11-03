@@ -8,9 +8,8 @@ try:
     from .data import CLASSES
     from .validate_data import validate_dataset
 except ImportError:
-    from validate_data import validate_dataset
-
     from data import CLASSES
+    from validate_data import validate_dataset
 
 
 def clean_dataset(source: Path, destination: Path):

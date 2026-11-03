@@ -3,12 +3,11 @@ import os
 from contextlib import asynccontextmanager
 from typing import Annotated
 
+import mlflow
 import numpy as np
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from PIL import Image, UnidentifiedImageError
 from torchvision import transforms
-
-import mlflow
 
 # MLflow tracking server
 MLFLOW_TRACKING_URI = os.getenv(

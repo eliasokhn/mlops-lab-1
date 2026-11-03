@@ -2,13 +2,12 @@ import argparse
 import os
 from pathlib import Path
 
+import mlflow
 import mlflow.pytorch
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, models, transforms
-
-import mlflow
 
 # --------------------------------------------------
 # Command-line arguments
