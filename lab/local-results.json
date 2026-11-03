@@ -1,0 +1,48 @@
+[
+  {
+    "label": "baseline",
+    "version": "1",
+    "run_id": "55455dd3afc640ec8d7eda58c573d7b2",
+    "lr": "0.001",
+    "epochs": 3,
+    "test_accuracy": 0.5260663507109005,
+    "test_size": 1055,
+    "decision": "initial champion"
+  },
+  {
+    "label": "small_learning_rate",
+    "version": "2",
+    "run_id": "639fb8bc61c3420ebf392b9e119307ca",
+    "lr": "0.000001",
+    "epochs": 3,
+    "test_accuracy": 0.12511848341232226,
+    "test_size": 1055,
+    "decision": "challenger",
+    "gate_tags": {
+      "gate.decision": "challenger",
+      "gate.candidate_accuracy": "0.12511848341232226",
+      "gate.champion_accuracy": "0.5260663507109005",
+      "gate.margin": "0.030745587768719645",
+      "gate.test_size": "1055",
+      "gate.previous_champion": "1"
+    }
+  },
+  {
+    "label": "best_settings",
+    "version": "3",
+    "run_id": "df5a9a7d499640bcafd838c34426333c",
+    "lr": "0.0001",
+    "epochs": 5,
+    "test_accuracy": 0.7725118483412322,
+    "test_size": 1055,
+    "decision": "champion",
+    "gate_tags": {
+      "gate.decision": "champion",
+      "gate.candidate_accuracy": "0.7725118483412322",
+      "gate.champion_accuracy": "0.5260663507109005",
+      "gate.margin": "0.030745587768719645",
+      "gate.test_size": "1055",
+      "gate.previous_champion": "1"
+    }
+  }
+]
