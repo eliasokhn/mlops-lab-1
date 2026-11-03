@@ -1,0 +1,5 @@
+{
+  "scope": "isolated disposable Compose project; real training volume preserved",
+  "down_up_keeps_registered_model": "PASS",
+  "down_v_removes_registered_model": "PASS"
+}

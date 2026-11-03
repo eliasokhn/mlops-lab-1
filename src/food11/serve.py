@@ -1,13 +1,13 @@
 import io
 import os
+from contextlib import asynccontextmanager
+from typing import Annotated
 
 import mlflow
 import numpy as np
-import torch
-from fastapi import FastAPI, File, UploadFile
-from PIL import Image
+from fastapi import FastAPI, File, HTTPException, UploadFile
+from PIL import Image, UnidentifiedImageError
 from torchvision import transforms
-
 
 # MLflow tracking server
 MLFLOW_TRACKING_URI = os.getenv(
@@ -18,10 +18,7 @@ MLFLOW_TRACKING_URI = os.getenv(
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
 
 
-model = mlflow.pyfunc.load_model(
-    "models:/food11@champion",
-    model_config={"device": "cpu"}
-)
+model = None
 
 
 # Food-11 categories
@@ -51,22 +48,45 @@ transform = transforms.Compose([
 ])
 
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app):
+    global model
+    model = None
+    if not os.environ.get("SKIP_MODEL"):
+        model = mlflow.pyfunc.load_model(
+            os.getenv("MODEL_URI", "models:/food11@champion"),
+            model_config={"device": "cpu"},
+        )
+    yield
+    model = None
+
+
+app = FastAPI(lifespan=lifespan)
+
 
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "model_loaded": model is not None,
+        "model_uuid": getattr(getattr(model, "metadata", None), "model_uuid", None),
+    }
 
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+async def predict(file: Annotated[UploadFile, File()]):
+
+    if model is None:
+        raise HTTPException(503, "Model is not loaded")
 
     image_bytes = await file.read()
 
-    image = Image.open(
-        io.BytesIO(image_bytes)
-    ).convert("RGB")
+    try:
+        with Image.open(io.BytesIO(image_bytes)) as uploaded:
+            image = uploaded.convert("RGB")
+    except (UnidentifiedImageError, OSError, ValueError) as exc:
+        raise HTTPException(400, "Upload a valid image") from exc
 
     image_tensor = transform(image)
 

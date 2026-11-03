@@ -1,0 +1,66 @@
+{
+  "pull_request": "https://github.com/eliasokhn/mlops-lab-1/pull/1",
+  "required_checks": [
+    "test",
+    "smoke"
+  ],
+  "require_pull_request": true,
+  "enforce_admins": true,
+  "failing_test_run": "https://github.com/eliasokhn/mlops-lab-1/actions/runs/41675913156",
+  "failing_test_smoke_skipped": true,
+  "observed_failed_pr_mergeable_state": "blocked",
+  "observed_passing_pr_mergeable_state": "clean",
+  "earlier_uv_sync_seconds": 4,
+  "successful_runs": [
+    {
+      "id": 41680935691,
+      "event": "push",
+      "url": "https://github.com/eliasokhn/mlops-lab-1/actions/runs/41680935691",
+      "conclusion": "success",
+      "duration_seconds": 171,
+      "jobs": [
+        {
+          "name": "test",
+          "conclusion": "success",
+          "duration_seconds": 50
+        },
+        {
+          "name": "smoke",
+          "conclusion": "success",
+          "duration_seconds": 113
+        },
+        {
+          "name": "push",
+          "conclusion": "skipped",
+          "duration_seconds": 0
+        }
+      ],
+      "uv_sync_seconds": 6
+    },
+    {
+      "id": 41680951915,
+      "event": "pull_request",
+      "url": "https://github.com/eliasokhn/mlops-lab-1/actions/runs/41680951915",
+      "conclusion": "success",
+      "duration_seconds": 167,
+      "jobs": [
+        {
+          "name": "test",
+          "conclusion": "success",
+          "duration_seconds": 50
+        },
+        {
+          "name": "smoke",
+          "conclusion": "success",
+          "duration_seconds": 109
+        },
+        {
+          "name": "push",
+          "conclusion": "skipped",
+          "duration_seconds": 0
+        }
+      ],
+      "uv_sync_seconds": 5
+    }
+  ]
+}

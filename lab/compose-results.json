@@ -1,0 +1,65 @@
+{
+  "staging_before": {
+    "health": {
+      "status": "ok",
+      "model_loaded": true,
+      "model_uuid": "m-953076a99c5c4a7a854cc3926933a094"
+    },
+    "prediction": {
+      "category": "Bread",
+      "confidence": 0.7271645665168762
+    }
+  },
+  "staging_changed_without_restart": {
+    "health": {
+      "status": "ok",
+      "model_loaded": true,
+      "model_uuid": "m-953076a99c5c4a7a854cc3926933a094"
+    },
+    "prediction": {
+      "category": "Bread",
+      "confidence": 0.7271645665168762
+    }
+  },
+  "staging_after_restart": {
+    "health": {
+      "status": "ok",
+      "model_loaded": true,
+      "model_uuid": "m-3ceee607b1044c58ba9dc657a819914b"
+    },
+    "prediction": {
+      "category": "Bread",
+      "confidence": 0.9907767176628113
+    }
+  },
+  "champion_prediction": {
+    "health": {
+      "status": "ok",
+      "model_loaded": true,
+      "model_uuid": "m-3ceee607b1044c58ba9dc657a819914b"
+    },
+    "prediction": {
+      "category": "Bread",
+      "confidence": 0.9907767176628113
+    }
+  },
+  "champion_version": "3",
+  "after_down_up": {
+    "health": {
+      "status": "ok",
+      "model_loaded": true,
+      "model_uuid": "m-3ceee607b1044c58ba9dc657a819914b"
+    },
+    "prediction": {
+      "category": "Bread",
+      "confidence": 0.9907767176628113
+    }
+  },
+  "versions_after_down_up": [
+    "1",
+    "2",
+    "3"
+  ],
+  "named_volume_persistence": "PASS",
+  "frontend_http_status": 200
+}
